@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  nodes     Node[]
+}
+
+model Node {
+  id       Int                                  @id @default(autoincrement())
+  nodeName String
+  location Unsupported("\"public\".geography")?
+  owner    User?                                @relation(fields: [ownerId], references: [id])
+  ownerId  Int?
+
+  log Log[]
+}
+
+model Log {
+  id        Int      @default(autoincrement())
+  logged_at DateTime @default(now())
+  nitrate   Float
+
+  node   Node @relation(fields: [nodeId], references: [id])
+  nodeId Int
+  @@unique([id, logged_at])
+}
