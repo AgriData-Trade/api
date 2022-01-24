@@ -1,4 +1,4 @@
-// This is your Prisma schema file,
+// This is your Prisma schema file Float
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
@@ -10,31 +10,33 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  nodes     Node[]
-}
-
 model Node {
-  id       Int                                  @id @default(autoincrement())
+  id       String                               @id @default(uuid())
   nodeName String
   location Unsupported("\"public\".geography")?
-  owner    User?                                @relation(fields: [ownerId], references: [id])
-  ownerId  Int?
 
   log Log[]
 }
 
 model Log {
-  id        Int      @default(autoincrement())
-  logged_at DateTime @default(now())
-  nitrate   Float
+  id                          Int      @default(autoincrement())
+  logged_at                   DateTime @default(now())
+  hash                        String
+  battery_voltage             Float
+  clockBattery_voltage        Float
+  temperature_celsius         Float
+  nitrate_mg_P_L              Float
+  nitrate_mV                  Float
+  speciicConductivity_mS_P_cm Float
+  salinity_psu                Float
+  totalDissolvedSolids_g_P_L  Float
+  rawCoductivity_uS_P_cm      Float
+  pH_units                    Float
+  pH_mV                       Float
+  referece_mV                 Float
 
-  node   Node @relation(fields: [nodeId], references: [id])
-  nodeId Int
-  @@unique([id, logged_at])
+  node    Node   @relation(fields: [node_id], references: [id])
+  node_id String
+
+  @@unique([node_id, logged_at])
 }

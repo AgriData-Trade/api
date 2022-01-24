@@ -8,17 +8,23 @@ COPY package*.json ./
 COPY prisma ./prisma/
 
 # Install app dependencies
-RUN yarn install
+RUN npm install
 
-COPY . .
+COPY src ./src
+COPY nest-cli.json ./nest-cli.json
+COPY tsconfig.json ./tsconfig.json
+COPY tsconfig.build.json ./tsconfig.build.json
+COPY prisma ./prisma/
 
-RUN yarn run build
+RUN npm run build
 
 FROM node:16
 
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/package.json ./
 COPY --from=builder /app/dist ./dist
+COPY prisma ./prisma/
+COPY start.sh ./start.sh
 
 EXPOSE 3000
-CMD [ "yarn", "run", "start:prod" ]
+CMD [ "./start.sh" ]

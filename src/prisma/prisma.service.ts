@@ -9,6 +9,10 @@ export class PrismaService extends PrismaClient
         await this.$connect();
     }
 
+    async onModuleDestroy() {
+        await this.$disconnect();
+    }
+
     async enableShutdownHooks(app: INestApplication) {
         this.$on('beforeExit', async () => {
             await app.close();
